@@ -23,8 +23,10 @@ That is why we decided to design our own Rhino plugin: to multiply the usability
 
 ## 🎯 WHAT: The Core Pitch
 * **Stop Clicking, Start Typing:** The standard Rhino workflow requires selecting an object, opening properties, finding the UserText tab, and typing. UserText DB puts your entire model in an Excel-style grid. Navigate with arrow keys, hit `Enter` to edit, and breeze through data entry.
+<video src="Resources/MP4/SHOW%20SELECTED.mp4" width="100%" autoplay loop muted playsinline></video>
 * **Bi-Directional Sync:** The data and the 3D model are one. Select a row in your database, and the geometry highlights in Rhino. Select objects in your viewport, and the grid instantly filters to show exactly what you've selected.
 * **Error-Free Data:** Consistency is the hardest part of metadata. Our plugin automatically extracts unique values from your model and turns them into dropdown menus. Stop worrying about typos ruining your material schedules.
+<video src="Resources/MP4/SELECT%20BY%20KEY.mp4" width="100%" autoplay loop muted playsinline></video>
 * **Massive Time Savings:** Need to assign "Approved" to 400 objects? The built-in Batch Editor does it in one click.
 
 ---
@@ -32,20 +34,30 @@ That is why we decided to design our own Rhino plugin: to multiply the usability
 ## 🛠️ HOW: Key Features
 
 ### ⚡ 1. The Live Data Grid
+<video src="Resources/MP4/GRID%20NEW%20COLUMN.mp4" width="100%" autoplay loop muted playsinline></video>
+
 * **Excel-Style Editing:** A seamless tabular interface for all User Text Keys.
 * **Keyboard Navigation:** Fully optimized for keyboard users—arrow keys to move, `Enter` to open an edit, `Enter` to close.
-* **Custom Layouts:** Reorder, hide, and add columns exactly how you want to see them.
+* **Custom Layouts:**
+<video src="Resources/MP4/GROUP%20BY.mp4" width="100%" autoplay loop muted playsinline></video>
+ Reorder, hide, and add columns exactly how you want to see them.
 * **Smart Visibility Filtering:** Quick toggles to hide empty rows, or filter out hidden/locked geometry. By default, the grid only shows visible, unlocked objects (respecting layer states) to keep your workspace relevant.
 
 ### 🧠 2. Smart Automation & Batching
+<video src="Resources/MP4/BATCH%20DATA.mp4" width="100%" autoplay loop muted playsinline></video>
+
 * **Auto-Populating Dropdowns:** Turn any column into a dropdown. The plugin automatically scans your entire Rhino file, finds every unique value used in that column, and builds your dropdown options for you.
 * **Batch Editing:** Apply uniform data across massive selections instantly.
 
 ### 🎨 3. 3D Audit Mode
+<video src="Resources/MP4/3D%20AUDIT.mp4" width="100%" autoplay loop muted playsinline></video>
+
 * **Live Color-Coding:** Select any metadata column (or Object Name/Type) to instantly color-code your entire Rhino viewport based on the data values.
 * **Deep Block Support:** The custom display conduit is fully block-aware, recursively diving into nested instance definitions to accurately color inner geometry.
 
 ### 🗂 4. View States
+<video src="Resources/MP4/GRID%20SETTINGS.mp4" width="100%" autoplay loop muted playsinline></video>
+
 * **What are States?** View States allow you to save the exact configuration of your Grid Settings—which columns are visible, their order, and what data you are focusing on—into a named profile.
 * **Why are they useful?** When working on complex BIM models, you often need to switch contexts (e.g., viewing 'Structural' data vs 'Cost Estimation' data vs 'Phasing'). Instead of manually checking and unchecking 20 columns every time you change tasks, simply load a saved state to instantly snap your workspace into the exact column layout you need.
 
@@ -70,10 +82,14 @@ UserText DB is designed from the ground up to handle massive architectural model
 ---
 
 ## 🔍 SEARCH: Query Cheatsheet
+<video src="Resources/MP4/FILTER%20SELECTION.mp4" width="100%" autoplay loop muted playsinline></video>
+
 
 Finding the right data shouldn't be hard. Our custom query engine understands human logic:
 
 ### Basic Search
+<video src="Resources/MP4/FILTER%20SELECTION%202.mp4" width="100%" autoplay loop muted playsinline></video>
+
 Type any text into the filter box to instantly hide rows that don't contain your search string.
 - *Example:* Typing `wood` will show only objects with "wood" in any column.
 
