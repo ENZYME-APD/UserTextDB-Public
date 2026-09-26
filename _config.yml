@@ -1,2 +1,9 @@
 title: UserTextDB
 description: Excel-style database management for Rhino User Text by Enzyme.
+
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: "default"
