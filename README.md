@@ -103,3 +103,14 @@ Enable the `.*` toggle button next to the search bar to bypass standard text sea
 
 ---
 *Created by [Enzyme APD](https://www.weareenzyme.com/)*
+
+---
+
+## 🚀 Beta Testing Installation
+
+To help us beta test the plugin, you can install the latest release manually:
+
+1. Download the latest `.yak` file from the [release folder](release/). *(Click the `.yak` file, then click the "Download raw file" button).*
+2. Open Rhino 8.
+3. Open a file explorer and simply **Drag and Drop** the downloaded `.yak` file directly into the open Rhino 8 window.
+4. Restart Rhino to complete the installation.
