@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UserTextDB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+          --bg-dark: #0a0a0c;
+          --bg-card: #111116;
+          --border-color: #1e1e26;
+          --accent-teal: #2dd4a0;
+          --accent-green: #1aad7e;
+          --text-primary: #ffffff;
+          --text-secondary: #a0a0a5;
+          --font-family: 'Inter', sans-serif;
+          --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+          font-family: var(--font-family);
+          background-color: var(--bg-dark);
+          color: var(--text-primary);
+          line-height: 1.6;
+          -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Navbar exactly like the GH plugin */
+        .navbar {
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          background: rgba(10, 10, 12, 0.8);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border-bottom: 1px solid var(--border-color);
+          padding: 1rem 2rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .nav-brand {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-weight: 700;
+          font-size: 1.25rem;
+          color: var(--text-primary);
+          text-decoration: none;
+        }
+        .logo-img { height: 32px; width: auto; border: none; border-radius: 0; }
+        .nav-links { display: flex; gap: 2rem; align-items: center; font-size: 0.95rem; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; transition: var(--transition); font-weight: 500; }
+        .nav-links a:hover { color: var(--text-primary); }
+
+        /* Container for content */
+        .container {
+          max-width: 900px;
+          margin: 0 auto;
+          padding: 4rem 2rem 6rem;
+        }
+        
+        /* Markdown formatting matching Enzyme style */
+        h1, h2, h3, h4, h5 { color: var(--text-primary); margin-top: 2.5em; margin-bottom: 1em; font-weight: 600; }
+        h1 { font-size: 3rem; text-align: center; margin-top: 1em; margin-bottom: 2em; letter-spacing: -0.02em; }
+        h2 { font-size: 1.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        h3 { font-size: 1.25rem; }
+        p, li { color: var(--text-secondary); margin-bottom: 1.2em; font-size: 1.05rem; }
+        ul, ol { margin-bottom: 1.5em; padding-left: 1.5em; }
+        li { margin-bottom: 0.5em; }
+        a { color: var(--accent-teal); text-decoration: none; transition: color 0.2s ease; }
+        a:hover { color: var(--accent-green); text-decoration: underline; }
+        img { max-width: 100%; border-radius: 8px; border: 1px solid var(--border-color); }
+        code { 
+            background-color: var(--bg-card); 
+            padding: 3px 6px; 
+            border-radius: 4px; 
+            color: var(--accent-teal); 
+            font-family: 'Courier New', Courier, monospace; 
+            font-size: 0.9em;
+            border: 1px solid var(--border-color);
+        }
+        pre { background-color: var(--bg-card); padding: 15px; border-radius: 8px; overflow-x: auto; border: 1px solid var(--border-color); margin-bottom: 1.5em; }
+        pre code { background-color: transparent; padding: 0; color: var(--text-secondary); border: none; }
+        
+        /* Table matching Enzyme style */
+        table { width: 100%; border-collapse: collapse; margin: 2em 0; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; display: block; overflow-x: auto; background: var(--bg-card); }
+        th, td { padding: 15px 20px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        th { background: rgba(30, 30, 38, 0.5); font-weight: 600; color: var(--text-secondary); font-size: 0.9rem; white-space: nowrap; }
+        td { font-size: 0.95rem; color: var(--text-secondary); }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { color: var(--text-primary); }
+        
+        blockquote { border-left: 4px solid var(--accent-teal); padding-left: 20px; color: var(--text-secondary); margin: 1.5em 0; font-style: italic; background: var(--bg-card); padding: 1.5rem; border-radius: 0 8px 8px 0; }
+        blockquote p { margin-bottom: 0; }
+        hr { border: none; border-top: 1px solid var(--border-color); margin: 3em 0; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="nav-brand">
+            <img src="https://enzyme-apd.github.io/enzyme-grasshopper-plugin/images/enzyme_logo.png" alt="Enzyme Logo" class="logo-img">
+        </a>
+        <div class="nav-links">
+            <a href="https://github.com/ENZYME-APD/UserTextDB" target="_blank">GitHub</a>
+        </div>
+    </nav>
+    <main class="container">
+        {{ content }}
+    </main>
+</body>
+</html>
