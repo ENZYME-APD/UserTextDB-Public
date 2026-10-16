@@ -1,7 +1,7 @@
 # <img src="RhinoUserTextDatabase/icon.ico" width="48" align="top" /> UserText DB
 
-![Version](https://img.shields.io/badge/version-1.1.0_Beta-blue.svg)
-![Platform](https://img.shields.io/badge/platform-Rhino_8-black.svg)
+![Version](https://img.shields.io/badge/version-1.1.47_Beta-blue.svg)
+![Platform](https://img.shields.io/badge/platform-Rhino_8_(Windows_%7C_Mac)-black.svg)
 ![Brand](https://img.shields.io/badge/by-Enzyme-4CAF50.svg)
 
 **UserText DB** is a powerful, lightning-fast spreadsheet interface for managing Rhino User Text attributes. Built by [Enzyme APD](https://www.weareenzyme.com/), it replaces Rhino's native, one-object-at-a-time attribute panel with an interactive, Excel-style grid that makes handling metadata, BIM information, and model data effortless.
@@ -48,6 +48,8 @@ That is why we decided to design our own Rhino plugin: to multiply the usability
 
 * **Auto-Populating Dropdowns:** Turn any column into a dropdown. The plugin automatically scans your entire Rhino file, finds every unique value used in that column, and builds your dropdown options for you.
 * **Batch Editing:** Apply uniform data across massive selections instantly.
+* **One Undo per Action:** Every cell edit, batch edit, column rename, column delete and CSV import is a single `Ctrl+Z` in Rhino.
+* **Safe Column Rename & Delete:** Renaming a key (Grid Settings → Key Name) only moves values from objects that have the old key, and never overwrites a value that already exists under the new name — any conflicts are reported and left untouched. Deleting a column removes that key from every object, after confirmation.
 
 ### 🎨 3. 3D Audit Mode
 <video src="Resources/MP4/3D%20AUDIT.mp4" width="100%" autoplay loop muted playsinline></video>
@@ -64,6 +66,13 @@ That is why we decided to design our own Rhino plugin: to multiply the usability
 ### 🔄 5. Excel & CSV Interoperability
 * Export your entire Rhino model's metadata to a CSV with one click.
 * Share the CSV with a project manager, edit it in Excel, and import it back. The plugin reads the changes and injects the new data straight into your Rhino geometry.
+* **Excel-friendly files:** exported CSVs are UTF-8 (accents like `ñ` survive) and use your computer's list separator, so they open correctly in Excel in any language (`;` in Spanish/European Excel, `,` elsewhere). Imports accept `,`, `;` or tab.
+* **How import works:**
+  * Rows are matched to objects by the `ObjectId` column, which must be kept.
+  * Columns are matched by **header name**, so you can reorder or remove columns in Excel.
+  * An **empty cell removes that key** from the object (same as clearing it in the grid). Remove a column entirely if you don't want to touch that key.
+  * Changes to the `Name` column rename objects; `Type` is read-only and ignored.
+  * New column headers become new keys. A summary shows how many objects changed and how many rows didn't match an object in the file.
 
 ### ⚙️ 6. Sleek, Native Integration
 * Switchable horizontal/vertical layouts to dock perfectly wherever you like in your Rhino workspace.
@@ -75,8 +84,11 @@ That is why we decided to design our own Rhino plugin: to multiply the usability
 UserText DB is designed from the ground up to handle massive architectural models with tens of thousands of objects without bottlenecking Rhino's main thread.
 
 - **UI Virtualization:** The plugin leverages Eto's `TreeGridView` data virtualization. Rather than instantiating a UI text box for every single cell (which would cause memory exhaustion with 10,000+ objects), the interface only draws the exact cells currently visible on your monitor.
-- **Smart Sleep Mode:** To ensure Rhino remains completely buttery smooth, the plugin "goes to sleep" when the panel is hidden (e.g., when you click away to the Layers or Properties tab). It safely unsubscribes from heavy document tracking to ignore background modeling operations. When you bring the panel back into focus, it performs a single, fast bulk-refresh.
+- **In-Memory Index:** Each object's user text is cached once and looked up by object Id, so filtering, sorting and grouping never go back to the Rhino document per cell.
+- **Batched Writes:** Edits are written with `ObjectTable.ModifyAttributes` inside a single undo record, and the panel ignores the document events its own writes generate — editing 1,000 objects refreshes the grid once, not thousands of times.
+- **Idle-Time Sync:** Changes made anywhere in Rhino (Properties panel, `SetUserText`, undo/redo, paste, import, layer visibility/lock) are queued and applied in one pass when Rhino is idle. While the panel is hidden the queue is kept and applied when you return.
 - **Event Throttling & Fast-Bypassing:** Dropdown updates and bulk layout changes use internal circuit breakers. This forces the UI to bypass its standard grid rebuilds when updating internal lists, preventing cascading UI events that would otherwise trigger dozens of heavy LINQ filtering queries per click.
+- **Cached 3D Audit:** Audit geometry (including nested blocks) is meshed and cached once, not rebuilt every frame. Objects that can't be meshed are left visible instead of disappearing.
 - **Schema Persistence via Rhino Strings:** Your customized grid structures, empty column placeholders, dropdown options, and view states are seamlessly serialized into lightweight JSON and stored persistently in the `RhinoDoc.Strings` dictionary. This ensures your customized database schema inherently travels inside the `.3dm` file without requiring external databases.
 
 ---
@@ -93,9 +105,16 @@ Finding the right data shouldn't be hard. Our custom query engine understands hu
 Type any text into the filter box to instantly hide rows that don't contain your search string.
 - *Example:* Typing `wood` will show only objects with "wood" in any column.
 
-### Multi-Term Search
-Separate words with commas to search for multiple terms at once (OR logic).
-- *Example:* `timber, phase 6` instantly finds objects that have both.
+Search is always case-insensitive.
+
+### Multi-Term Search (AND)
+Separate terms with commas: an object must match **every** term.
+- *Example:* `timber, phase 6` finds objects that contain both "timber" and "phase 6".
+
+### Either Term (OR)
+Use ` OR ` (capital letters, with spaces) or ` | ` between terms: an object must match **at least one**.
+- *Example:* `timber OR steel` finds objects that contain "timber" or "steel".
+- Combine both: `timber OR steel, phase 6` finds timber or steel objects that are also in phase 6.
 
 ### Exclusion (NOT)
 Prefix a term with a minus `-` to hide rows containing that term.
@@ -113,7 +132,7 @@ Enable the `.*` toggle button next to the search bar to bypass standard text sea
 - `Floor|Roof` : The pipe `|` acts as an OR operator. Finds items containing either "Floor" OR "Roof".
 - `\d+` : Finds any cell containing numbers (e.g., "Level 1", "Phase 3").
 - `^Level [1-5]$` : Finds exact matches for "Level 1" through "Level 5", ignoring "Level 10".
-- `(?i)concrete` : Case-insensitive search. Finds "Concrete", "CONCRETE", or "concrete".
+- `^(Concrete|Steel)$` : Exact match on either value, nothing longer. (Regex mode is already case-insensitive.)
 
 *Want to master Regex? Check out the [RexEgg Quick Start Guide](https://www.rexegg.com/regex-quickstart.php) for a comprehensive cheat sheet, or use [Regex101](https://regex101.com/) if you want an interactive tool to test your patterns.*
 
@@ -122,11 +141,40 @@ Enable the `.*` toggle button next to the search bar to bypass standard text sea
 
 ---
 
-## 🚀 Beta Testing Installation
+## 🚀 Installation
 
-To help us beta test the plugin, you can install the latest release manually:
+**Requirements:** Rhino 8 for Windows or Mac. Works with Rhino's default .NET runtime and, on Windows, with the .NET Framework runtime (`SetDotNetRuntime`).
 
+### From the Rhino Package Manager (recommended)
+1. In Rhino 8, run the `PackageManager` command.
+2. Search for **UserTextDatabase** (tick *Include pre-releases* while the plugin is in beta).
+3. Click **Install** and restart Rhino.
+4. Open the panel with the `UserTextDB` command.
+
+### Manual install (beta testers)
 1. Download the latest `.yak` file from the [release folder](release/). *(Click the `.yak` file, then click the "Download raw file" button).*
 2. Open Rhino 8.
 3. Open a file explorer and simply **Drag and Drop** the downloaded `.yak` file directly into the open Rhino 8 window.
 4. Restart Rhino to complete the installation.
+
+---
+
+## 📝 Changelog
+
+### 1.1.47-beta
+**Fixes**
+- Renaming a key no longer erases values on objects that already had the new key.
+- CSV export no longer breaks when an object name contains a comma; accents and Spanish/European Excel are handled.
+- CSV import matches columns by header name, supports multi-line cells and reports skipped rows.
+- The grid now stays in sync with edits made outside the panel (Properties panel, `SetUserText`, undo/redo), when opening or importing files, when switching documents on Mac, after *Select None*, and when layers are hidden or locked.
+- Every edit is one undo step.
+- New files no longer get example columns (Status/Material/Phase) added automatically, and opening a file no longer marks it as modified.
+- 3D Audit no longer hides objects that have no render mesh, and works in non-English Rhino.
+- After committing an edit with `Enter`, the cell stays selected for arrow-key navigation.
+
+**Performance**
+- Editing, batch editing, filtering and selection sync are much faster on large models (no more full grid rebuilds per object).
+- 3D Audit no longer rebuilds geometry on every frame.
+
+**Compatibility**
+- One package for Rhino 8 on Windows and Mac, including the .NET Framework runtime on Windows.
