@@ -1,6 +1,6 @@
 # <img src="RhinoUserTextDatabase/icon.ico" width="48" align="top" /> UserText DB
 
-![Version](https://img.shields.io/badge/version-1.1.47_Beta-blue.svg)
+![Version](https://img.shields.io/badge/version-1.1.48_Beta-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Rhino_8_(Windows_%7C_Mac)-black.svg)
 ![Brand](https://img.shields.io/badge/by-Enzyme-4CAF50.svg)
 
@@ -41,6 +41,9 @@ That is why we decided to design our own Rhino plugin: to multiply the usability
 * **Custom Layouts:**
 <video src="Resources/MP4/GROUP%20BY.mp4" width="100%" autoplay loop muted playsinline></video>
  Reorder, hide, and add columns exactly how you want to see them.
+* **Natural Sorting:** Sort By and grouping treat numbers as numbers (`9` before `10`, `Level 2` before `Level 10`); decimal commas like `12,5` are understood, and empty values go last.
+* **Formula Values:** Values written as Rhino text fields (e.g. `%<Area("…")>%`) show their result. The formula is kept unless you type a new value, and CSV export keeps the formula text.
+* **Fits Any Panel Size:** The settings tabs scroll on their own and the grid always keeps room for itself, so the panel stays usable when docked narrow or floating small.
 * **Smart Visibility Filtering:** Quick toggles to hide empty rows, or filter out hidden/locked geometry. By default, the grid only shows visible, unlocked objects (respecting layer states) to keep your workspace relevant.
 
 ### 🧠 2. Smart Automation & Batching
@@ -51,10 +54,15 @@ That is why we decided to design our own Rhino plugin: to multiply the usability
 * **One Undo per Action:** Every cell edit, batch edit, column rename, column delete and CSV import is a single `Ctrl+Z` in Rhino.
 * **Safe Column Rename & Delete:** Renaming a key (Grid Settings → Key Name) only moves values from objects that have the old key, and never overwrites a value that already exists under the new name — any conflicts are reported and left untouched. Deleting a column removes that key from every object, after confirmation.
 
+### 📐 2b. Calculated Columns & Group Totals
+* **Calculated columns** — `@Layer`, `@Block`, `@Area`, `@Volume`, `@Length` and `@Base Z` — are read straight from the geometry. They are hidden by default: tick **Visible** in *Grid Settings* to show them. Values are in model units and include the contents of blocks (nested too); closed flat curves (plots, footprints) and hatches report the area they enclose. They work like any other column for sorting, grouping, Select By, 3D Audit and CSV export, but are read-only.
+* **Group totals:** in *Grid Settings*, set a column's **Group Total** to Sum, Average, Min, Max or Count. When the grid is grouped, each group row shows that summary — e.g. group by `Use` with `@Area` set to Sum to get the floor area per use. `@Area`, `@Volume` and `@Length` sum by default.
+
 ### 🎨 3. 3D Audit Mode
 <video src="Resources/MP4/3D%20AUDIT.mp4" width="100%" autoplay loop muted playsinline></video>
 
 * **Live Color-Coding:** Select any metadata column (or Object Name/Type) to instantly color-code your entire Rhino viewport based on the data values.
+* **Consistent Colours & Legend:** Each value keeps the same colour across sessions and files (20-colour palette). Numeric columns with many values use a blue-to-red gradient. A legend with object counts is drawn in the viewport.
 * **Deep Block Support:** The custom display conduit is fully block-aware, recursively diving into nested instance definitions to accurately color inner geometry.
 
 ### 🗂 4. View States
@@ -160,6 +168,18 @@ Enable the `.*` toggle button next to the search bar to bypass standard text sea
 ---
 
 ## 📝 Changelog
+
+### 1.1.48-beta
+**New**
+- Calculated columns: `@Layer`, `@Block`, `@Area`, `@Volume`, `@Length`, `@Base Z` (enable them in Grid Settings).
+- Group totals per column: Sum, Average, Min, Max or Count in group rows.
+- Natural sorting and group order (`Level 2` before `Level 10`).
+- Text field formulas show their evaluated value.
+- 3D Audit: stable colours per value, gradient for numeric columns, and a legend in the viewport.
+
+**Fixes**
+- The grid stays readable in narrow or short panels: settings tabs scroll and the grid always keeps its space ([#1](https://github.com/ENZYME-APD/UserTextDB-Public/issues/1)).
+- The *Read Documentation* link in the Info tab opens this page.
 
 ### 1.1.47-beta
 **Fixes**
